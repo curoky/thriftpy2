@@ -429,6 +429,7 @@ def p_simple_base_type(p):  # noqa
                         | I32
                         | I64
                         | DOUBLE
+                        | FLOAT
                         | STRING
                         | BINARY'''
     if p[1] == 'bool':
@@ -443,6 +444,8 @@ def p_simple_base_type(p):  # noqa
         p[0] = TType.I64
     if p[1] == 'double':
         p[0] = TType.DOUBLE
+    if p[1] == 'float':
+        p[0] = TType.FLOAT
     if p[1] == 'string':
         p[0] = TType.STRING
     if p[1] == 'binary':
@@ -468,6 +471,10 @@ def p_container_type(p):
 
 def p_map_type(p):
     '''map_type : MAP '<' field_type ',' field_type '>' '''
+    p[0] = TType.MAP, (p[3], p[5])
+
+def p_hash_map_type(p):
+    '''map_type : HASH_MAP '<' field_type ',' field_type '>' '''
     p[0] = TType.MAP, (p[3], p[5])
 
 
@@ -697,6 +704,8 @@ def _cast(t, linno=0):  # noqa
         return _cast_i64
     if t == TType.DOUBLE:
         return _cast_double
+    if t == TType.FLOAT:
+        return _cast_float
     if t == TType.STRING:
         return _cast_string
     if t == TType.BINARY:
@@ -745,6 +754,10 @@ def _cast_i64(v):
 
 
 def _cast_double(v):
+    assert isinstance(v, (float, int))
+    return float(v)
+
+def _cast_float(v):
     assert isinstance(v, (float, int))
     return float(v)
 

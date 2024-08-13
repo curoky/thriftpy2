@@ -36,6 +36,9 @@ def pack_i64(i64):
 def pack_double(dub):
     return struct.pack("!d", dub)
 
+def pack_float(dub):
+    return struct.pack("!f", dub)
+
 
 def pack_string(string):
     return struct.pack("!i%ds" % len(string), len(string), string)
@@ -59,6 +62,9 @@ def unpack_i64(buf):
 
 def unpack_double(buf):
     return struct.unpack("!d", buf)[0]
+
+def unpack_float(buf):
+    return struct.unpack("!f", buf)[0]
 
 
 def write_message_begin(outbuf, name, ttype, seqid, strict=True):
@@ -117,6 +123,9 @@ def write_val(outbuf, ttype, val, spec=None):
 
     elif ttype == TType.DOUBLE:
         outbuf.write(pack_double(val))
+
+    elif ttype == TType.FLOAT:
+        outbuf.write(pack_float(val))
 
     elif ttype in BIN_TYPES:
         if not isinstance(val, bytes):
@@ -234,6 +243,9 @@ def read_val(inbuf, ttype, spec=None, decode_response=True,
 
     elif ttype == TType.DOUBLE:
         return unpack_double(inbuf.read(8))
+
+    elif ttype == TType.FLOAT:
+        return unpack_float(inbuf.read(4))
 
     elif ttype == TType.BINARY:
         sz = unpack_i32(inbuf.read(4))
@@ -358,6 +370,9 @@ def skip(inbuf, ftype):
 
     elif ftype == TType.DOUBLE:
         inbuf.read(8)
+
+    elif ftype == TType.FLOAT:
+        inbuf.read(4)
 
     elif ftype in BIN_TYPES:
         inbuf.read(unpack_i32(inbuf.read(4)))

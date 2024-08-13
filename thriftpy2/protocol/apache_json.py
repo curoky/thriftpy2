@@ -23,6 +23,7 @@ CTYPES = {
     TType.I32: 'i32',
     TType.I64: 'i64',
     TType.DOUBLE: 'dbl',
+    TType.FLOAT: 'flt',
     TType.STRING: 'str',
     TType.BINARY: 'str',  # apache sends binary data as base64 encoded
     TType.STRUCT: 'rec',
@@ -296,6 +297,7 @@ class TApacheJSONProtocol(TProtocolBase):
                         'i32': int,
                         'i64': int,
                         'dbl': float,
+                        'flt': float,
                         'str': str,
                     }[ftype](value)
         if hasattr(base_type, '__call__'):
